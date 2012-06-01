@@ -4,31 +4,45 @@
  */
 
 (function(){
-	"use strict";
+//	"use strict";
 	var glob = this;
 
-	function declare( parentClasses, newProto ){
+	function declare( parents, newProto ){
+
+		var Cls = function(){
+			if ( this.init && typeof this.init == 'function' )
+				this.init.apply( this, Array.prototype.slice.call(arguments) );
+		};
+
 		// passed only new class prototype
 		if ( arguments.length == 1 ){
-			var proto = parentClasses,
-				Cls = function(){
-					if ( this.init && typeof this.init == 'function' )
-						this.init.apply( this, Array.prototype.slice.call(arguments) );
-				},
+			var proto = parents,
 				k;
 
 			for ( k in proto ) if ( proto.hasOwnProperty(k) )
 				Cls.prototype[k] = proto[k];
-			Cls.prototype.constructor = Cls;
-			return Cls;
 		}
 
-		else if ( arguments.length == 2 && parentClasses instanceof Array && typeof newProto == 'object' ){
+
+		// For single parent inheritance
+		else if ( arguments.length == 2 && typeof parents == 'object' && typeof newProto == 'object' ){
+			Cls.prototype = parents;
+			Cls.prototype.constructor = Cls;
+		}
+
+
+		// For multiple inheritance: passed parents list and new class prototype
+		else if ( arguments.length == 2 && parents instanceof Array && typeof newProto == 'object' ){
 			// TODO: add c3mro
 		}
+
+		else
+			throw Error( 'Wrong parameters' );
+
+		return Cls;
 	}
 
-
+debugger;
 	// register as AMD module if possible, or add to global scope
 	if ( glob.define && glob.define.amd )
 		define( [], function(){
