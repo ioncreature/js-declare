@@ -25,8 +25,10 @@
 
 
 		// For single parent inheritance
-		else if ( arguments.length == 2 && typeof parents == 'object' && typeof newProto == 'object' ){
-			Cls.prototype = parents;
+		else if ( arguments.length == 2 && typeof parents == 'function' && typeof newProto == 'object' ){
+			var P = function(){};
+			P.prototype = parents.prototype;
+			Cls.prototype = new P;
 			Cls.prototype.constructor = Cls;
 		}
 
@@ -42,7 +44,7 @@
 		return Cls;
 	}
 
-debugger;
+
 	// register as AMD module if possible, or add to global scope
 	if ( glob.define && glob.define.amd )
 		define( [], function(){
