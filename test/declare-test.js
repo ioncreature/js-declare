@@ -61,4 +61,11 @@ test( 'Extending classes', function(){
 	ok( obj3 instanceof Class, 'obj3 instanceof Class' );
 	ok( obj3 instanceof Subclass, 'obj3 instanceof Subclass' );
 	ok( obj3 instanceof Subsubclass, 'obj3 instanceof Subsubclass' );
+
+	ok( obj1.init, 'obj1 has init method' );
+	ok( obj2.init, 'obj2 has init method' );
+	ok( obj2.add,  'obj2 has add method' );
+	ok( obj3.init, 'obj3 has init method' );
+	ok( obj3.add,  'obj3 has add method' );
+	ok( obj3.sub,  'obj3 has sub method' );
 });
