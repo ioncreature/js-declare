@@ -62,10 +62,42 @@ test( 'Extending classes', function(){
 	ok( obj3 instanceof Subclass, 'obj3 instanceof Subclass' );
 	ok( obj3 instanceof Subsubclass, 'obj3 instanceof Subsubclass' );
 
+    console.log( obj1, obj2, obj3 );
+
 	ok( obj1.init, 'obj1 has init method' );
 	ok( obj2.init, 'obj2 has init method' );
 	ok( obj2.add,  'obj2 has add method' );
 	ok( obj3.init, 'obj3 has init method' );
 	ok( obj3.add,  'obj3 has add method' );
 	ok( obj3.sub,  'obj3 has sub method' );
+});
+
+
+test( 'Using inherited method', function(){
+
+    var Class = declare({
+			init: function( val ){
+				this.val = val;
+			},
+            someAction: function( add ){
+                this.val += add;
+            }
+		}),
+		Subclass = declare( Class, {
+            someAction: function( add ){
+                this.
+                this.val += add;
+            }
+		}),
+		Subsubclass = declare( Subclass, {
+            someAction: function( add ){
+                this.val += add;
+            }
+		}),
+		obj1 = new Class( 100 ),
+		obj2 = new Subclass( 200 ),
+		obj3 = new Subsubclass( 300 );
+
+    ok( obj1.inherited && obj2.inherited && obj3.inherited, 'check for availability of "inherited" method' );
+
 });

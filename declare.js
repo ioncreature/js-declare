@@ -3,10 +3,19 @@
  * June 2012
  */
 
-(function(){
-//	"use strict";
-	var glob = this;
+(function( global ){
+	"use strict";
 
+    //
+    function Parent(){}
+
+    // object extending
+    function extend( to, from ){
+        for ( var k in from ) if ( from.hasOwnProperty(k) )
+            to[k] = from[k];
+    }
+
+    // Yeeaah!
 	function declare( parents, newProto ){
 
 		var Cls = function(){
@@ -14,24 +23,17 @@
 				this.init.apply( this, Array.prototype.slice.call(arguments) );
 		};
 
-		// passed only new class prototype
-		if ( arguments.length == 1 ){
-			var proto = parents,
-				k;
-
-			for ( k in proto ) if ( proto.hasOwnProperty(k) )
-				Cls.prototype[k] = proto[k];
-		}
-
+		// Passed only new class prototype
+		if ( arguments.length == 1 )
+            extend( Cls.prototype, parents );
 
 		// For single parent inheritance
 		else if ( arguments.length == 2 && typeof parents == 'function' && typeof newProto == 'object' ){
-			var P = function(){};
-			P.prototype = parents.prototype;
-			Cls.prototype = new P;
+            Parent.prototype = parents.prototype;
+			Cls.prototype = new Parent;
 			Cls.prototype.constructor = Cls;
+            extend( Cls.prototype, newProto );
 		}
-
 
 		// For multiple inheritance: passed parents list and new class prototype
 		else if ( arguments.length == 2 && parents instanceof Array && typeof newProto == 'object' ){
@@ -46,11 +48,11 @@
 
 
 	// register as AMD module if possible, or add to global scope
-	if ( glob.define && glob.define.amd )
+	if ( global.define && global.define.amd )
 		define( [], function(){
 			return declare;
 		});
 	else
-		glob.declare = declare;
-})();
+        global.declare = declare;
+})( this );
 
