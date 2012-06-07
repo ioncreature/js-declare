@@ -31,12 +31,11 @@
 	function declare( parents, newProto ){
 
 		var Cls = function(){
-			if ( this instanceof Cls ){
-				if ( this.init && typeof this.init == 'function' )
-					this.init.apply( this, Array.prototype.slice.call(arguments) );
-			}
-			else
+			if ( !(this instanceof Cls) )
 				throw new SyntaxError( "Constructor must be called with 'new' statement" );
+
+			if ( this.init && typeof this.init == 'function' )
+				this.init.apply( this, Array.prototype.slice.call(arguments) );
 		};
 
 		// Passed only new class prototype
