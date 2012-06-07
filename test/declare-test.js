@@ -22,8 +22,16 @@ test( 'Simple class creation', function(){
 	ok( typeof Ctor == 'function', 'Constructor must be a function' );
 	ok( typeof Ctor.prototype.init == 'function', 'Init must be in constructor prototype' );
 
-	var obj  = new Ctor( 100 );
-	var obj2 = new Ctor( 101 );
+	var obj  = new Ctor( 100 ),
+		obj2 = new Ctor( 101 );
+
+	try {
+		var obj3 = Ctor( 102 );
+		ok( false, 'Construction of object must use "new" statement' );
+	}
+	catch ( e ){
+		equal( e.message, "Constructor must be called with 'new' statement" );
+	}
 
 	ok( obj instanceof Ctor, 'Check instanceof operator' );
 	strictEqual( obj.x, 100, 'Check for instance property' );
@@ -85,12 +93,13 @@ test( 'Using inherited method', function(){
 		}),
 		Subclass = declare( Class, {
             someAction: function( add ){
-                this.
+                this.inherited( 'someAction', arguments );
                 this.val += add;
             }
 		}),
 		Subsubclass = declare( Subclass, {
             someAction: function( add ){
+                this.inherited( 'someAction', arguments );
                 this.val += add;
             }
 		}),
@@ -99,5 +108,14 @@ test( 'Using inherited method', function(){
 		obj3 = new Subsubclass( 300 );
 
     ok( obj1.inherited && obj2.inherited && obj3.inherited, 'check for availability of "inherited" method' );
+
+    obj1.someAction( 1 );
+    equal( obj1.val, 101, 'add 1 without calling parent' );
+
+    obj2.someAction( 1 );
+    equal( obj2.val, 202, 'add 1 with calling overridden method' );
+
+    obj3.someAction( 1 );
+    equal( obj3.val, 303, 'add 1 with calling overridden method' );
 
 });
