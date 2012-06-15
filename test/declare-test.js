@@ -87,20 +87,20 @@ test( 'Using inherited method', function(){
 			init: function( val ){
 				this.val = val;
 			},
-            someAction: function( add ){
-                this.val += add;
+            add: function( val ){
+                this.val += val;
             }
 		}),
 		Subclass = declare( Class, {
-            someAction: function( add ){
-                this.inherited( 'someAction', arguments );
-                this.val += add;
+            add: function add( val ){
+				add.parent.apply( this, arguments );
+                this.val += val;
             }
 		}),
 		Subsubclass = declare( Subclass, {
-            someAction: function( add ){
-                this.inherited( 'someAction', arguments );
-                this.val += add;
+            add: function add( val ){
+				add.parent.apply( this, arguments );
+                this.val += val;
             }
 		}),
 		obj1 = new Class( 100 ),
@@ -109,13 +109,13 @@ test( 'Using inherited method', function(){
 
     ok( obj1.inherited && obj2.inherited && obj3.inherited, 'check for availability of "inherited" method' );
 
-    obj1.someAction( 1 );
+    obj1.add( 1 );
     equal( obj1.val, 101, 'add 1 without calling parent' );
 
-    obj2.someAction( 1 );
+    obj2.add( 1 );
     equal( obj2.val, 202, 'add 1 with calling overridden method' );
 
-    obj3.someAction( 1 );
+	obj3.add( 1 );
     equal( obj3.val, 303, 'add 1 with calling overridden method' );
 
 });

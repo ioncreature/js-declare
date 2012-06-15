@@ -50,7 +50,10 @@
 			Cls.prototype = new Parent;
 			Cls.prototype.constructor = Cls;
 			extend( Cls.prototype, newProto );
-			Cls._super = parents;
+
+			for ( var k in Cls.prototype ) if ( Cls.prototype.hasOwnProperty(k) )
+				if ( typeof Cls.prototype[k] == 'function' && typeof parents.prototype[k] == 'function' )
+					Cls.prototype[k].parent = parents.prototype[k];
 		}
 
 		// For multiple inheritance: passed parents list and new class prototype
@@ -59,7 +62,7 @@
 		}
 
 		else
-			throw Error( 'Wrong parameters' );
+			throw Error( 'declare :: Wrong parameters' );
 
 		return Cls;
 	}
