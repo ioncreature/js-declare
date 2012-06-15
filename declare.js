@@ -15,18 +15,6 @@
 			to[k] = from[k];
 	}
 
-	// function for calling overridden methods
-	function inherited( methodName, args ){
-		var p = Object.getPrototypeOf( this),
-			ctor = p.constructor,
-			_super = ctor._super;
-
-		console.log( ctor );
-		return;
-		if ( p[methodName] )
-			return p[methodName].apply( this, args );
-	}
-
 	// Yeeaah!
 	function declare( parents, newProto ){
 
