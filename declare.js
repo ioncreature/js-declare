@@ -29,7 +29,6 @@
 		// Passed only new class prototype
 		if ( arguments.length == 1 ){
 			extend( Cls.prototype, parents );
-			Cls.prototype.inherited = inherited;
 		}
 
 		// For single parent inheritance

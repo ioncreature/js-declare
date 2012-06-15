@@ -56,7 +56,7 @@ test( 'Extending classes', function(){
 		}),
 		Subsubclass = declare( Subclass, {
 			sub: function( val ){
-				this.value -= val;
+				this.val -= val;
 			}
 		}),
 		obj1 = new Class( 100 ),
@@ -78,11 +78,17 @@ test( 'Extending classes', function(){
 	ok( obj3.init, 'obj3 has init method' );
 	ok( obj3.add,  'obj3 has add method' );
 	ok( obj3.sub,  'obj3 has sub method' );
+
+	obj2.add( 10 );
+	equal( obj2.val, 210, 'check for add methods' );
+
+	obj3.add( 10 );
+	obj3.sub( 1 );
+	equal( obj3.val, 309, 'check for add and sub methods' );
 });
 
 
 test( 'Using inherited method', function(){
-
     var Class = declare({
 			init: function( val ){
 				this.val = val;
@@ -107,8 +113,6 @@ test( 'Using inherited method', function(){
 		obj2 = new Subclass( 200 ),
 		obj3 = new Subsubclass( 300 );
 
-    ok( obj1.inherited && obj2.inherited && obj3.inherited, 'check for availability of "inherited" method' );
-
     obj1.add( 1 );
     equal( obj1.val, 101, 'add 1 without calling parent' );
 
@@ -117,5 +121,4 @@ test( 'Using inherited method', function(){
 
 	obj3.add( 1 );
     equal( obj3.val, 303, 'add 1 with calling overridden method' );
-
 });
