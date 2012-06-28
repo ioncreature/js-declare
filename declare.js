@@ -23,13 +23,12 @@
 				throw new SyntaxError( "Constructor must be called with 'new' statement" );
 
 			if ( this.init && typeof this.init == 'function' )
-				this.init.apply( this, Array.prototype.slice.call(arguments) );
+				this.init.apply( this, Array.prototype.slice.call(arguments, 0) );
 		};
 
 		// Passed only new class prototype
-		if ( arguments.length == 1 ){
+		if ( arguments.length == 1 )
 			extend( Cls.prototype, parents );
-		}
 
 		// For single parent inheritance
 		else if ( arguments.length == 2 && typeof parents == 'function' && typeof newProto == 'object' ){
@@ -56,7 +55,7 @@
 
 
 	// register as AMD module if possible, or add to global scope
-	if ( global.define && global.define.amd )
+	if ( typeof define !== 'undefined' && define.amd )
 		define( [], function(){
 			return declare;
 		});
