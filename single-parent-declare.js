@@ -3,13 +3,13 @@
  * September 2012
  */
 
-(function( global ){
+(function( global, undef ){
 
 	function base(){
 		var descendant = arguments.callee.caller,
 			args = arguments.length ? arguments : descendant.arguments,
 			ancestor = descendant._class.Super.prototype[descendant._name];
-		return isFn( ancestor ) && ancestor.apply( this, args );
+		return isFn( ancestor ) ? ancestor.apply( this, args ) : undef;
 	}
 
 	function mixin( Ctor, source ){
