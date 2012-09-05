@@ -3,7 +3,7 @@
  * June 2012
  */
 
-module( 'Class creation' );
+module( 'Multiple parent inheritance' );
 
 test( 'Simple class creation', function(){
 	ok( typeof declare == 'function', 'Declare function exists' );

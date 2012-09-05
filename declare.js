@@ -15,9 +15,8 @@
 			to[k] = from[k];
 	}
 
-	// Yeeaah!
-	function declare( parents, newProto ){
 
+	function declare( parents, newProto ){
 		var Cls = function(){
 			if ( !(this instanceof Cls) )
 				throw new SyntaxError( "Constructor must be called with 'new' statement" );
@@ -27,8 +26,10 @@
 		};
 
 		// Passed only new class prototype
-		if ( arguments.length == 1 )
+		if ( arguments.length == 1 ){
 			extend( Cls.prototype, parents );
+
+		}
 
 		// For single parent inheritance
 		else if ( arguments.length == 2 && typeof parents == 'function' && typeof newProto == 'object' ){
