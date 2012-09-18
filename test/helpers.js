@@ -28,7 +28,7 @@ function makeMockClass( name, parents, mro ){
 
 	if ( mro )
 		Class.mro = function(){
-			return mro;
+			return mro && mro.length ? [Class].concat(mro) : Class;
 		};
 
 	return Class;

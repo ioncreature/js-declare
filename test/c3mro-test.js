@@ -30,6 +30,9 @@ test( 'Linearization with single parent', function(){
 		mroA = c3mro( A ),
 		mroA2 = c3mro( A2 );
 
+	console.log( 'mroA', mroA );
+	console.log( 'mroA2', mroA2 );
+
 	equal( mroToString(mroA), 'A C', 'Checks that linearization of A is [A, B]' );
-	equal( mroToString(mroA2), 'A2 B C', 'Checks that linearization of A2 is [A2, C, B]' );
+	equal( mroToString(mroA2), 'A2 B C', 'Checks that linearization of A2 is [A2, B, C]' );
 });

@@ -1,13 +1,13 @@
 /**
  * @author Marenin Alex
- * June 2012
+ * June, September 2012
  */
 
 (function( global ){
 
 	/**
 	 * Linearization using C3MRO algorithm (see http://www.python.org/download/releases/2.3/mro/)
-	 * if class A extends B,C,D then L[A] = A + merge( L[B], L[C], L[D], [B,C,D] );
+	 * if class A extends B,C,D then L[A] = [A] + merge( L[B], L[C], L[D], [B,C,D] );
 	 * @param {Function} Class
 	 * @return {Array}
 	 */
@@ -18,9 +18,14 @@
 		if ( !(parents && parents.length) )
 			return [];
 
+		if ( parents.length === 1 )
+			return [Class].concat( parents[0].mro() );
+
 		// Prepare merge arguments
 		parents.forEach( function( parent ){
-			mergeArgs.push( parent.mro() );
+			var mro = parent.mro();
+			if ( mro && mro.length )
+				mergeArgs.push( mro );
 		});
 		mergeArgs.push( parents );
 
@@ -29,17 +34,18 @@
 
 
 	/**
-	 * @param {...Array}
+	 * @param {Array} lists
+	 * @return Array
 	 */
-	function merge(){
-		if ( arguments.length === 0 )
+	function merge( lists ){
+
+		if ( lists.length === 0 )
 			return [];
 		// Simple parent inheritance
-		else if ( arguments.length === 1 )
-			return arguments[0];
+		else if ( lists.length === 1 )
+			return lists[0];
 
 		var result = [],
-			lists = slice( arguments ),
 			currentHead,
 			i;
 
@@ -67,8 +73,8 @@
 
 	function existsInTails( value, lists ){
 		for ( var i = 0; i < lists.length; i++ )
-			if ( lists.lastIndexOf(value) > 0 )
-				return i;
+			if ( (lists[i].length == 1 && lists[i][0] === value) || lists[i].lastIndexOf(value) > 0 )
+				return true;
 
 		return false;
 	}
