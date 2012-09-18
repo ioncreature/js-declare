@@ -18,18 +18,18 @@ test( 'Linearization without parents', function(){
 		},
 		linearization = c3mro( Class );
 
-	deepEqual( linearization, [], 'Check than linearization of class without parents is empty' );
+	deepEqual( linearization, [], 'Check that linearization of class without parents is empty' );
 });
 
 
 test( 'Linearization with single parent', function(){
-	var B = makeMockParentClass( 'B', [] ),
-		C = makeMockParentClass( 'C', [B] ),
-		A = makeMockClass([ B ]),
-		A2 = makeMockClass([ C ]),
+	var C = makeMockClass( 'C', null, [] ),
+		B = makeMockClass( 'B', null, [C] ),
+		A = makeMockClass( 'A', [C] ),
+		A2 = makeMockClass( 'A2', [B] ),
 		mroA = c3mro( A ),
 		mroA2 = c3mro( A2 );
 
-	equal( 'B', mroToString(mroA), 'Checks that linearization of A is [A, B]' );
-	equal( 'CB', mroToString(mroA2), 'Checks that linearization of A2 is [A2, C, B]' );
+	equal( mroToString(mroA), 'A C', 'Checks that linearization of A is [A, B]' );
+	equal( mroToString(mroA2), 'A2 B C', 'Checks that linearization of A2 is [A2, C, B]' );
 });

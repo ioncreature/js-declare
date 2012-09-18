@@ -6,110 +6,102 @@
 (function( global ){
 
 	/**
-	 * @param {Array|Arguments} array - array-like object
-	 * @param {int?} start
-	 * @param {int?} end
+	 * Linearization using C3MRO algorithm (see http://www.python.org/download/releases/2.3/mro/)
+	 * if class A extends B,C,D then L[A] = A + merge( L[B], L[C], L[D], [B,C,D] );
+	 * @param {Function} Class
 	 * @return {Array}
 	 */
-	function slice( array, start, end ){
-		return Array.prototype.slice.call( array, start || 0, end );
+	function linearize( Class ){
+		var mergeArgs = [],
+			parents = Class.getParents();
+
+		if ( !(parents && parents.length) )
+			return [];
+
+		// Prepare merge arguments
+		parents.forEach( function( parent ){
+			mergeArgs.push( parent.mro() );
+		});
+		mergeArgs.push( parents );
+
+		return [Class].concat( merge(mergeArgs) );
 	}
 
 
-	var C3 = {
+	/**
+	 * @param {...Array}
+	 */
+	function merge(){
+		if ( arguments.length === 0 )
+			return [];
+		// Simple parent inheritance
+		else if ( arguments.length === 1 )
+			return arguments[0];
 
-		lists: null,
+		var result = [],
+			lists = slice( arguments ),
+			currentHead,
+			i;
 
-		/**
-		 * Linearization using C3MRO algorithm (see http://www.python.org/download/releases/2.3/mro/)
-		 * if class A extends B,C,D then L[A] = A + merge( L[B], L[C], L[D], [B,C,D] );
-		 * @param {function} Class
-		 * @return {Array}
-		 */
-		linearize: function( Class ){
-			var mergeArgs = [],
-				parents = Class.getParents();
-
-			if ( !(parents && parents.length) )
-				return [];
-
-			// Prepare merge arguments
-			parents.forEach( function( parent ){
-				mergeArgs.push( parent.mro() );
-			});
-			mergeArgs.push( parents );
-
-			return [Class].concat( this.merge.apply(this, mergeArgs) );
-		},
-
-
-		/**
-		 * @param {...Array}
-		 */
-		merge: function(){
-
-			if ( arguments.length === 0 )
-				return [];
-			// Simple parent inheritance
-			else if ( arguments.length === 1 )
-				return arguments[0];
-
-			var result = [],
-				lists = slice( arguments ),
-				currentHead,
-				i;
-
-			while ( lists.length ){
-				// find available head
-				i = 0;
-				do {
-					currentHead = lists[i][0];
-					i++;
-				}
-				while ( this.existsInTails(currentHead, lists) || i < lists.length );
-
-				// check for errors
-				if ( this.existsInTails(currentHead, lists) )
-					throw new Error( 'Incorrect inheritance graph' );
-
-				result.push( currentHead );
-				lists = this.removeFromHeads( currentHead, lists );
-				currentHead = lists[0][0];
+		while ( lists.length ){
+			// find available head
+			i = 0;
+			do {
+				currentHead = lists[i][0];
+				i++;
 			}
+			while ( existsInTails(currentHead, lists) || i < lists.length );
 
-			return result;
-		},
+			// check for errors
+			if ( existsInTails(currentHead, lists) )
+				throw new Error( 'Incorrect inheritance graph' );
 
-
-		existsInTails: function( value, lists ){
-			for ( var i = 0; i < lists.length; i++ )
-				if ( lists.lastIndexOf(value) > 0 )
-					return i;
-
-			return false;
-		},
-
-
-		removeFromHeads: function( head, lists ){
-			return lists
-				.map( function( list ){
-					if ( list[0] === head )
-						list.shift();
-					return list;
-				})
-				.filter( function( list ){
-					return list.length !== 0;
-				});
+			result.push( currentHead );
+			lists = removeFromHeads( currentHead, lists );
+			currentHead = lists[0][0];
 		}
-	};
+
+		return result;
+	}
+
+
+	function existsInTails( value, lists ){
+		for ( var i = 0; i < lists.length; i++ )
+			if ( lists.lastIndexOf(value) > 0 )
+				return i;
+
+		return false;
+	}
+
+
+	function removeFromHeads( head, lists ){
+		return lists
+			.map( function( list ){
+				if ( list[0] === head )
+					list.shift();
+				return list;
+			})
+			.filter( function( list ){
+				return list.length !== 0;
+			});
+	}
+
+
+	/**
+	 * @param {Array|Arguments} array
+	 * @return {Array}
+	 */
+	function slice( array ){
+		return Array.prototype.slice.call( array );
+	}
 
 
 	// register as AMD module if possible, or add to global scope
 	if ( typeof define !== 'undefined' && define.amd )
 		define( [], function(){
-			return C3.linearize;
+			return linearize;
 		});
 	else
-		global.c3mro = C3.linearize;
+		global.c3mro = linearize;
 
 })( this );

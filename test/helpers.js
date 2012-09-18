@@ -9,33 +9,32 @@ function slice( val ){
 
 
 /**
- * @param {Array} parents
- * @return {Object}
+ * @param {String} name
+ * @param {Array|null} parents
+ * @param {Array?} mro
+ * @return Function
  */
-function makeMockClass( parents ){
-	var Class = {};
+function makeMockClass( name, parents, mro ){
+	var Class = function(){};
 
-	Class.getParents = function(){
-		return parents;
+	Class.toString = function(){
+		return name;
 	};
+
+	if ( parents )
+		Class.getParents = function(){
+			return parents;
+		};
+
+	if ( mro )
+		Class.mro = function(){
+			return mro;
+		};
 
 	return Class;
 }
 
 
-function makeMockParentClass( name, mro ){
-	var Parent = new String( name );
-	Parent.mro = function(){
-		return mro;
-	};
-	return Parent;
-}
-
-
 function mroToString( l ){
-	var str = '';
-	l.forEach( function( val ){
-		str += ' ' + val.toString();
-	});
-	return str;
+	return l.join( ' ' );
 }
