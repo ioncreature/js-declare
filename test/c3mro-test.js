@@ -23,16 +23,17 @@ test( 'Linearization without parents', function(){
 
 
 test( 'Linearization with single parent', function(){
-	var C = makeMockClass( 'C', null, [] ),
-		B = makeMockClass( 'B', null, [C] ),
-		A = makeMockClass( 'A', [C] ),
-		A2 = makeMockClass( 'A2', [B] ),
+	var D = makeMockClass( 'D', null, [] ),
+		C = makeMockClass( 'C', null, [D] ),
+		B = makeMockClass( 'B', null, [C, D] ),
+		A = makeMockClass( 'A', [D] ),
+		A2 = makeMockClass( 'A2', [C] ),
+		A3 = makeMockClass( 'A3', [B] ),
 		mroA = c3mro( A ),
-		mroA2 = c3mro( A2 );
+		mroA2 = c3mro( A2 ),
+		mroA3 = c3mro( A3 );
 
-	console.log( 'mroA', mroA );
-	console.log( 'mroA2', mroA2 );
-
-	equal( mroToString(mroA), 'A C', 'Checks that linearization of A is [A, B]' );
-	equal( mroToString(mroA2), 'A2 B C', 'Checks that linearization of A2 is [A2, B, C]' );
+	equal( mroToString(mroA), 'A D', 'L[A] = [A, D]' );
+	equal( mroToString(mroA2), 'A2 C D', 'L[A2] = [A2, C, D]' );
+	equal( mroToString(mroA3), 'A3 B C D', 'L[A3] = [A3, B, C, D]' );
 });
