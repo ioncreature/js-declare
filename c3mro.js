@@ -3,7 +3,7 @@
  * June 2012
  */
 
-(function(){
+(function( global ){
 
 	/**
 	 * @param {Array|Arguments} array - array-like object
@@ -103,4 +103,13 @@
 		}
 	};
 
-})();
+
+	// register as AMD module if possible, or add to global scope
+	if ( typeof define !== 'undefined' && define.amd )
+		define( [], function(){
+			return C3.linearize;
+		});
+	else
+		global.c3mro = C3.linearize;
+
+})( this );
