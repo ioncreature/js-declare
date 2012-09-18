@@ -11,14 +11,10 @@ test( 'Check for existence', function(){
 
 
 test( 'Linearization without parents', function(){
-	var Class = {
-			getParents: function(){
-				return [];
-			}
-		},
-		linearization = c3mro( Class );
+	var A = makeMockClass( 'A', [] ),
+		mroA = c3mro( A );
 
-	deepEqual( linearization, [], 'Check that linearization of class without parents is empty' );
+	deepEqual( mroA, [A], 'L[A] = [A]. Check that linearization of class without parents is class itself' );
 });
 
 

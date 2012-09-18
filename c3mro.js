@@ -15,8 +15,8 @@
 		var mergeArgs = [],
 			parents = Class.getParents();
 
-		if ( !(parents && parents.length) )
-			return [];
+		if ( parents.length === 0 )
+			return [Class];
 
 		if ( parents.length === 1 )
 			return [Class].concat( parents[0].mro() );
@@ -90,15 +90,6 @@
 			.filter( function( list ){
 				return list.length !== 0;
 			});
-	}
-
-
-	/**
-	 * @param {Array|Arguments} array
-	 * @return {Array}
-	 */
-	function slice( array ){
-		return Array.prototype.slice.call( array );
 	}
 
 
