@@ -41,8 +41,8 @@
 
 		if ( lists.length === 0 )
 			return [];
-		// Simple parent inheritance
-		else if ( lists.length === 1 )
+
+		if ( lists.length === 1 )
 			return lists[0];
 
 		var result = [],
@@ -56,7 +56,7 @@
 				currentHead = lists[i][0];
 				i++;
 			}
-			while ( existsInTails(currentHead, lists) || i < lists.length );
+			while ( existsInTails(currentHead, lists) && i < lists.length );
 
 			// check for errors
 			if ( existsInTails(currentHead, lists) )
@@ -64,7 +64,6 @@
 
 			result.push( currentHead );
 			lists = removeFromHeads( currentHead, lists );
-			currentHead = lists[0][0];
 		}
 
 		return result;
@@ -73,7 +72,7 @@
 
 	function existsInTails( value, lists ){
 		for ( var i = 0; i < lists.length; i++ )
-			if ( (lists[i].length == 1 && lists[i][0] === value) || lists[i].lastIndexOf(value) > 0 )
+			if ( lists[i].lastIndexOf(value) > 0 )
 				return true;
 
 		return false;
