@@ -55,3 +55,84 @@ test( 'Simple diamond linearization', function(){
 
 	equal( mroToString(mroC), 'C P1 P2 SP', 'L[C] = [C, P1, P2, SP]' );
 });
+
+
+test( 'Full featured linearization', function(){
+	/*
+	A
+	|\
+	B \
+	|\ \
+	D C E
+	|/_/
+	O
+	 */
+	var O = makeMockClass( 'O' ),
+		D = makeMockClass( 'D', null, [O] ),
+		C = makeMockClass( 'C', null, [O] ),
+		E = makeMockClass( 'E', null, [O] ),
+		B = makeMockClass( 'B', null, [C, D, O] ),
+		A = makeMockClass( 'A', [B, E] ),
+		mroA = c3mro( A );
+
+	equal( mroToString(mroA), 'A B C D E O', 'L[A] = [A, B, C, D, E, O]' );
+});
+
+
+test( 'Full featured linearization 2', function(){
+	/*
+	A _
+	|  \
+	B _ \
+	|\ \|
+	C D E
+	|/_/
+	O
+	 */
+	var O = makeMockClass( 'O' ),
+		D = makeMockClass( 'D', null, [O] ),
+		C = makeMockClass( 'C', null, [O] ),
+		E = makeMockClass( 'E', null, [O] ),
+		B = makeMockClass( 'B', null, [C, D, E, O] ),
+		A = makeMockClass( 'A', [B, E] ),
+		mroA = c3mro( A );
+
+	equal( mroToString(mroA), 'A B C D E O', 'L[A] = [A, B, C, D, E, O]' );
+});
+
+
+test( 'Full featured linearization 3', function(){
+	/*
+	B-->A
+	|\ /
+	C D
+	|/
+	O
+	 */
+	var O = makeMockClass( 'O' ),
+		D = makeMockClass( 'D', null, [O] ),
+		C = makeMockClass( 'C', null, [O] ),
+		B = makeMockClass( 'B', null, [C, D, O] ),
+		A = makeMockClass( 'A', [B, D] ),
+		mroA = c3mro( A );
+
+	equal( mroToString(mroA), 'A B C D O', 'L[A] = [A, B, C, D, O]' );
+});
+
+
+test( 'Incorrect inheritance graph', function(){
+	var O = makeMockClass( 'O' ),
+		X = makeMockClass( 'X', null, [O] ),
+		Y = makeMockClass( 'Y', null, [O] ),
+		A = makeMockClass( 'A', null, [X, Y, O] ),
+		B = makeMockClass( 'B', null, [Y, X, O] ),
+		C = makeMockClass( 'C', [A, B] );
+
+	try {
+		c3mro( C );
+		ok( false, 'It is impossible!' );
+	}
+	catch ( e ){
+		equal( e.message, 'Incorrect inheritance graph', 'Throws an error on incorrect graph' );
+	}
+});
