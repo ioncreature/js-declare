@@ -3,11 +3,6 @@
  * September 2012
  */
 
-function slice( val ){
-	return Array.prototype.slice.apply( val );
-}
-
-
 /**
  * @param {String} name
  * @param {Array|null} parents
